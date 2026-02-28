@@ -3,7 +3,7 @@ pandas
 scipy
 matplotlib
 yfinance
-cvxpy
+#cvxpy
 pytest
 ruff
 black
