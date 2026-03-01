@@ -4,6 +4,9 @@ scipy
 matplotlib
 yfinance
 cvxpy
+osqp
+clarabel
+ecos
 pytest
 ruff
 black
