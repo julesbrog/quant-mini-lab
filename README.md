@@ -1,56 +1,56 @@
 # Quant Mini Lab — Backtesting, Options, and Portfolio Optimization (Python)
 
 A small, test-driven quantitative finance lab with three components:
-1) **Backtesting** of simple multi-asset strategies with transaction costs and robustness checks  
-2) **Options pricing** (Black–Scholes, Greeks, implied volatility) + Monte Carlo with variance reduction  
-3) **Portfolio optimization** (constrained mean–variance in CVXPY) with rolling out-of-sample evaluation
+- **Backtesting** (signals → weights → PnL, no lookahead, costs via turnover, robustness checks)
+- **Options** (Black–Scholes prices/Greeks/IV + Monte Carlo with variance reduction)
+- **Portfolio optimization** (constrained mean–variance in CVXPY, rolling out-of-sample)
 
-The goal is correctness, reproducibility, and clear diagnostics (benchmarks, sanity checks, sensitivity).
+## Highlights (1-minute scan)
+- End-to-end workflow: **data → model → validation → diagnostics**
+- Correctness checks: **put–call parity**, **IV inversion**, plus a **pytest** suite
+- Benchmarks & robustness: baselines + sensitivity to parameters / costs
+- Constraints validated empirically: long-only, caps, turnover bounds
 
----
+## Figures
 
-## Project structure
+### Backtest — strategies vs baselines
+![Backtest equity vs baselines](assets/backtest_equity_vs_baselines.png)
 
-- `src/qmlab/`  
-  - `data.py` — Yahoo Finance data loader + returns + walk-forward splits  
-  - `metrics.py` — performance + drawdowns + turnover  
-  - `backtest.py` — signals, weights, transaction costs, backtest engine  
-  - `bs.py` — Black–Scholes prices/Greeks, implied vol, Monte Carlo + variance reduction  
-  - `optimizer.py` — constrained mean–variance + rolling OOS backtest  
-- `tests/` — `pytest` unit tests for key components  
-- `notebooks/`  
-  - `01_backtest.ipynb`  
-  - `02_options_pricing.ipynb`  
-  - `03_portfolio_optimization.ipynb`
+### Options — Monte Carlo convergence (log-log)
+![Options MC convergence](assets/options_mc_convergence.png)
 
----
-
-## Key findings (from notebooks)
-
-### 1) Backtesting (SPY, QQQ, IWM, TLT, GLD — 2015–2024)
-- **TSMOM (sign-based), L=60, costs=5 bps**: small positive drift but weak Sharpe; moderate drawdowns; turnover ~0.10.  
-- **Mean Reversion (z-score trigger), L=20, z=1.0**: structurally loss-making, large drawdowns; high turnover (~0.42) and strong sensitivity to costs.  
-- **Benchmarks dominate** on this sample (SPY and equal-weight are hard to beat in a long-equity-dominated decade).  
-- Sensitivity analysis shows **longer lookbacks reduce turnover** and improve cost-robustness for TSMOM.
-
-### 2) Options pricing
-- Black–Scholes call/put prices pass **put–call parity** to numerical precision (~1e−14).  
-- **Implied vol inversion** recovers the original σ to numerical precision (~1e−14).  
-- Monte Carlo estimators converge toward BS; variance reduction (antithetic + control variate) often reduces error for a fixed path budget.
-
-### 3) Portfolio optimization (constrained mean–variance, rolling OOS)
-- Constrained mean–variance optimizer (long-only, cap, turnover constraint) delivers a reasonable risk-adjusted profile with **very low turnover** (~0.01).  
-- Constraints are verified empirically (fully invested, long-only, cap respected, turnover bounded).  
-- Equal-weight remains a strong baseline on this small universe; SPY has higher return with higher volatility/drawdown.
+### Optimizer — equity vs baselines
+![Optimizer equity vs baselines](assets/optimizer_equity_vs_baselines.png)
 
 ---
 
-## Setup
-
-Create and activate a virtual environment, then install dependencies:
+## How to run
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
 pip install -r requirements.txt
+pip install -e .
+pytest -q
+
+## Run notebooks
+- `notebooks/01_backtest.ipynb`
+- `notebooks/02_options_pricing.ipynb`
+- `notebooks/03_portfolio_optimization.ipynb`
+
+## Repo map
+- `src/qmlab/` — library code (data, metrics, backtest, BS/IV/MC, optimizer)
+- `tests/` — pytest unit tests
+- `notebooks/` — analysis notebooks
+- `assets/` — figures used in the README
+
+## Notes / limitations
+- Costs are simplified (bps × turnover), no explicit slippage/impact model.
+- Small ETF universe (chosen for interpretability).
+- Mean–variance optimization uses basic sample estimates (sensitive to estimation error).
+
+## Suggested next steps (optional)
+- Vol targeting / continuous trend strength (backtests)
+- Covariance shrinkage (e.g., Ledoit–Wolf) + risk parity / min-var baselines
+- MC convergence averaged across multiple seeds
