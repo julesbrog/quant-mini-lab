@@ -32,7 +32,7 @@ source .venv/bin/activate
 python -m pip install -U pip
 pip install -r requirements.txt
 pip install -e .
-pytest -q
+python -m pytest -q
 ```
 
 ## Run notebooks
