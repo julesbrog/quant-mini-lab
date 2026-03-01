@@ -33,6 +33,7 @@ python -m pip install -U pip
 pip install -r requirements.txt
 pip install -e .
 pytest -q
+```
 
 ## Run notebooks
 - `notebooks/01_backtest.ipynb`
