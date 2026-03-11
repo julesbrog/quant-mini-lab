@@ -5,7 +5,7 @@ A small, test-driven quantitative finance lab with three components:
 - **Options** (Black–Scholes prices/Greeks/IV + Monte Carlo with variance reduction)
 - **Portfolio optimization** (constrained mean–variance in CVXPY, rolling out-of-sample)
 
-## Highlights (1-minute scan)
+## Highlights 
 - End-to-end workflow: **data → model → validation → diagnostics**
 - Correctness checks: **put–call parity**, **IV inversion**, plus a **pytest** suite
 - Benchmarks & robustness: baselines + sensitivity to parameters / costs
@@ -51,7 +51,7 @@ python -m pytest -q
 - Small ETF universe (chosen for interpretability).
 - Mean–variance optimization uses basic sample estimates (sensitive to estimation error).
 
-## Suggested next steps (optional)
+## Suggested next steps 
 - Vol targeting / continuous trend strength (backtests)
 - Covariance shrinkage (e.g., Ledoit–Wolf) + risk parity / min-var baselines
 - MC convergence averaged across multiple seeds
